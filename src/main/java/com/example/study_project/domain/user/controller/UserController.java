@@ -33,7 +33,26 @@ public class UserController {
     //로그아웃
 
     //아이디 중복확인
+    @GetMapping("/idcheck")
+    public ResponseEntity<GlobalResponse<Map<String, String>>> ExistIDCheck(@RequestParam("username") String username) {
+        boolean isExist = userService.ExistIDCheck(username);
 
+        if(isExist) {
+            //이미 존재하는 ID
+            Map<String, String> data = new HashMap<>();
+            data.put("message", "해당 ID는 이미 사용 중입니다. 다른 ID를 입력해주세요.");
+            data.put("isPossible", "false");
+
+            return ResponseEntity.ok(GlobalResponse.failure(200, data));
+        } else {
+            //사용 가능한 ID
+            Map<String, String> data = new HashMap<>();
+            data.put("message", "사용 가능한 ID입니다.");
+            data.put("isPossible", "true");
+
+            return ResponseEntity.ok(GlobalResponse.success(200, data));
+        }
+    }
 
 
 }

@@ -44,4 +44,8 @@ public class UserService {
         //user객체 저장
         userRepository.save(user);
     }
+
+    public boolean ExistIDCheck(String username) {
+        return userRepository.existsByUsername(username);
+    }
 }

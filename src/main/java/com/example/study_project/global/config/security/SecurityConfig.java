@@ -33,7 +33,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         //해당 경로에 대해서는 모든 권한 허용
-                        .requestMatchers("/users/login", "/", "/users/join").permitAll()
+                        .requestMatchers("/users/login", "/", "/users/join", "/users/idcheck").permitAll()
                         //다른 요청에 대해서는 로그인한 사용자만 접근할 수 있다.
                         .anyRequest().authenticated());
         //jwt방식에서는 세션을 stateless상태로 관리 (중요!!!!)
