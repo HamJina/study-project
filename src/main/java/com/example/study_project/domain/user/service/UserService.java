@@ -1,6 +1,6 @@
 package com.example.study_project.domain.user.service;
 
-import com.example.study_project.domain.user.dto.JoinDTO;
+import com.example.study_project.domain.user.dto.request.JoinDTO;
 import com.example.study_project.domain.user.entity.User;
 import com.example.study_project.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

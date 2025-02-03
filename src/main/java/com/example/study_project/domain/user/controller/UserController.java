@@ -1,11 +1,17 @@
 package com.example.study_project.domain.user.controller;
 
-import com.example.study_project.domain.user.dto.JoinDTO;
+import com.example.study_project.domain.user.dto.request.JoinDTO;
+import com.example.study_project.domain.user.dto.request.LoginDTO;
 import com.example.study_project.domain.user.service.UserService;
 import com.example.study_project.global.common.response.GlobalResponse;
+import com.example.study_project.global.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -17,6 +23,8 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     //회원가입
     @PostMapping("/join")
@@ -27,10 +35,6 @@ public class UserController {
 
         return ResponseEntity.ok(GlobalResponse.success(200, data));
     }
-
-    //로그인
-
-    //로그아웃
 
     //아이디 중복확인
     @GetMapping("/idcheck")

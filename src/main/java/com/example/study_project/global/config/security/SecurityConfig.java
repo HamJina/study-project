@@ -1,16 +1,31 @@
 package com.example.study_project.global.config.security;
 
+import com.example.study_project.global.security.JwtFilter;
+import com.example.study_project.global.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration //스프링부트에서 관리되기 위함
 @EnableWebSecurity //시큐리티를 위한 config
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtUtil jwtUtil;
+    private final JwtFilter jwtFilter;
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
     //비밀번호를 해시로 암호화 시켜서 검증
     @Bean
@@ -33,13 +48,15 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         //해당 경로에 대해서는 모든 권한 허용
-                        .requestMatchers("/users/login", "/", "/users/join", "/users/idcheck").permitAll()
+                        .requestMatchers("/users/*","/auth/login","/auth/reissue").permitAll()
                         //다른 요청에 대해서는 로그인한 사용자만 접근할 수 있다.
                         .anyRequest().authenticated());
         //jwt방식에서는 세션을 stateless상태로 관리 (중요!!!!)
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

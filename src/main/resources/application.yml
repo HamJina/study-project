@@ -11,3 +11,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+jwt:
+  secret-key: "vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaROJfrg"
+  expiration: 3600000 # 토큰 만료 시간 (1시간 = 3600000ms)
