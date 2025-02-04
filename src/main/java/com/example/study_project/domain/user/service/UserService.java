@@ -3,6 +3,8 @@ package com.example.study_project.domain.user.service;
 import com.example.study_project.domain.user.dto.request.JoinDTO;
 import com.example.study_project.domain.user.entity.User;
 import com.example.study_project.domain.user.repository.UserRepository;
+import com.example.study_project.global.error.exception.CustomException;
+import com.example.study_project.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,7 @@ public class UserService {
 
         //이미 존재하는 이름이면 회원가입 진행x
         if(isExist) {
-            return ;
+            throw new CustomException(ErrorCode.ALREADY_EXIST_ID);
         }
 
         //존재하지 않는 이름이면 새로운 User엔티티 생성

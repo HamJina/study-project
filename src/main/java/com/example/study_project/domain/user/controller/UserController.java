@@ -26,12 +26,12 @@ public class UserController {
 
     //회원가입
     @PostMapping("/join")
-    public ResponseEntity<GlobalResponse<Map<String, String>>> joinUser(@RequestBody JoinDTO joinDTO) {
+    public ResponseEntity joinUser(@RequestBody JoinDTO joinDTO) {
         userService.joinUser(joinDTO);
         Map<String, String> data = new HashMap<>();
         data.put("message", "회원가입에 성공하였습니다.");
 
-        return ResponseEntity.ok(GlobalResponse.success(200, data));
+        return ResponseEntity.ok().body(data);
     }
 
     //아이디 중복확인
