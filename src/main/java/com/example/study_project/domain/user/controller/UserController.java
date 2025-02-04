@@ -2,6 +2,8 @@ package com.example.study_project.domain.user.controller;
 
 import com.example.study_project.domain.user.dto.request.JoinDTO;
 import com.example.study_project.domain.user.dto.response.IdCheckResponse;
+import com.example.study_project.domain.user.dto.response.UserResponseDTO;
+import com.example.study_project.domain.user.entity.User;
 import com.example.study_project.domain.user.service.UserService;
 import com.example.study_project.global.common.response.GlobalResponse;
 import com.example.study_project.global.error.exception.CustomException;
@@ -10,6 +12,8 @@ import com.example.study_project.global.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -34,6 +38,14 @@ public class UserController {
         return ResponseEntity.ok().body(data);
     }
 
+    //회원정보조회
+    @GetMapping()
+    public ResponseEntity getUserInfo() {
+        User currentUser = getCurrentUser();
+        UserResponseDTO userResponse = new UserResponseDTO(currentUser.getName(), currentUser.getUsername(), currentUser.getPhoneNumber(), currentUser.getEmail());
+        return ResponseEntity.ok().body(userResponse);
+    }
+
     //아이디 중복확인
     @GetMapping("/idcheck")
     public ResponseEntity<IdCheckResponse> ExistIDCheck(@RequestParam("username") String username) {
@@ -44,5 +56,10 @@ public class UserController {
         }
 
         return ResponseEntity.ok(new IdCheckResponse("사용 가능한 ID입니다.", true));
+    }
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userService.getUserByUserId(authentication.getName());
     }
 }

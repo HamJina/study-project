@@ -6,9 +6,11 @@ import com.example.study_project.domain.user.repository.UserRepository;
 import com.example.study_project.global.error.exception.CustomException;
 import com.example.study_project.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -49,5 +51,14 @@ public class UserService {
 
     public boolean ExistIDCheck(String username) {
         return userRepository.existsByUsername(username);
+    }
+
+    // 사용자 정보 조회 기능 추가
+    public User getUserByUserId(String userId) {
+        User findUser = userRepository.findByUsername(userId);
+        if(findUser==null){
+            throw new CustomException(ErrorCode.INVALID_USER_OR_PASSWORD);
+        }
+        return findUser;
     }
 }

@@ -49,7 +49,7 @@ public class AuthController{
             );
 
             // 2️⃣ 인증 성공하면 JWT 생성
-            String accessToken = jwtUtil.createJwt("accessToken",authentication.getName(), 60*60*10L); //10시간 유효
+            String accessToken = jwtUtil.createJwt("accessToken",authentication.getName(), 3600000L); //10시간 유효
             String refreshToken = jwtUtil.createJwt("refreshToken",authentication.getName(), 60 * 60 * 24 * 7L); // 7일 유효
 
             // 3️⃣ 응답 데이터 구성
@@ -87,7 +87,7 @@ public class AuthController{
         String username = jwtUtil.getUsername(refresh);
 
         // 새로운 액세스 토큰 & 리프레시 토큰 발급
-        String newAccess = jwtUtil.createJwt("accessToken", username, 60 * 60 * 10L);
+        String newAccess = jwtUtil.createJwt("accessToken", username, 3600000L);
         String newRefresh = jwtUtil.createJwt("refreshToken", username, 60 * 60 * 24 * 7L);
 
         // ⏩ 기존 리프레시 토큰 삭제 후 갱신

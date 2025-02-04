@@ -11,7 +11,17 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  output:
+    ansi:
+      enabled: always
 
 jwt:
-  secret-key: "vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaROJfrg"
-  expiration: 3600000 # 토큰 만료 시간 (1시간 = 3600000ms)
+  secret-key: "vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaROJfrg"  # Secret Key for JWT signing and validation
+  expiration: 3600000 # JWT Token expiration time (1 hour = 3600000ms)
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
