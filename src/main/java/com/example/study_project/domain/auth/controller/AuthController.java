@@ -4,6 +4,8 @@ import com.example.study_project.domain.auth.dto.ReissueDTO;
 import com.example.study_project.domain.user.dto.request.LoginDTO;
 import com.example.study_project.domain.user.service.UserService;
 import com.example.study_project.global.common.response.GlobalResponse;
+import com.example.study_project.global.error.exception.CustomException;
+import com.example.study_project.global.error.exception.ErrorCode;
 import com.example.study_project.global.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
@@ -53,10 +55,7 @@ public class AuthController{
             return ResponseEntity.ok(GlobalResponse.success(200 ,responseData));
         } catch (AuthenticationException e) {
             // 4️⃣ 실패 응답 데이터 구성 (Map으로 감싸기)
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Invalid username or password");
-
-            return ResponseEntity.status(401).body(GlobalResponse.failure(401, errorResponse));
+            throw new CustomException(ErrorCode.INVALID_USER_OR_PASSWORD);
         }
     }
 
