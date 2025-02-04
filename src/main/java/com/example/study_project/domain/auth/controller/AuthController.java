@@ -1,6 +1,8 @@
 package com.example.study_project.domain.auth.controller;
 
+import com.example.study_project.domain.auth.RefreshTokenRepository;
 import com.example.study_project.domain.auth.dto.ReissueDTO;
+import com.example.study_project.domain.auth.service.RefreshTokenService;
 import com.example.study_project.domain.user.dto.request.LoginDTO;
 import com.example.study_project.domain.user.service.UserService;
 import com.example.study_project.global.common.response.GlobalResponse;
@@ -15,8 +17,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +30,7 @@ import java.util.Map;
 public class AuthController{
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
+    private final RefreshTokenService refreshTokenService;
     private final JwtUtil jwtUtil;
 
     //test
@@ -59,48 +64,47 @@ public class AuthController{
         }
     }
 
+
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(@RequestBody ReissueDTO reissueDTO) {
-
-        // get refresh token from request body
         String refresh = reissueDTO.getRefreshToken();
 
         if (refresh == null) {
-            // refresh token이 없으면
             throw new CustomException(ErrorCode.TOKEN_IS_NOT_EXIST);
         }
 
-        // expired check
         try {
             jwtUtil.isExpired(refresh);
         } catch (ExpiredJwtException e) {
-            // refresh token 만료 시
             throw new CustomException(ErrorCode.TOKEN_IS_EXPIRED);
         }
 
-        // refresh 토큰이 refresh인지 확인 (발급 시 페이로드에 명시)
         String category = jwtUtil.getCategory(refresh);
         if (!category.equals("refreshToken")) {
-            // refresh token이 아닌 경우 400 Bad Request 반환
             throw new CustomException(ErrorCode.TOKEN_IS_NOT_EXIST);
         }
 
-        // refresh 토큰에서 username과 role을 추출하여 새로운 access token과 refresh token 생성
         String username = jwtUtil.getUsername(refresh);
 
-        // 새로운 JWT(access token)과 refresh token 생성
-        String newAccess = jwtUtil.createJwt("accessToken", username, 60*60*10L);  // accessToken 재발급
-        String newRefresh = jwtUtil.createJwt("refreshToken", username, 60 * 60 * 24 * 7L);  // refreshToken 재발급
+        // 새로운 액세스 토큰 & 리프레시 토큰 발급
+        String newAccess = jwtUtil.createJwt("accessToken", username, 60 * 60 * 10L);
+        String newRefresh = jwtUtil.createJwt("refreshToken", username, 60 * 60 * 24 * 7L);
 
-        // 응답 데이터 구성
+        // ⏩ 기존 리프레시 토큰 삭제 후 갱신
+        refreshTokenService.updateRefreshToken(username, newRefresh);
+
+        // ⏩ SecurityContext 업데이트 (중요)
+        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         Map<String, String> responseData = new HashMap<>();
         responseData.put("accessToken", newAccess);
         responseData.put("refreshToken", newRefresh);
         responseData.put("message", "새로운 토큰이 발급되었습니다.");
 
-        // 응답 반환
         return ResponseEntity.ok().body(responseData);
     }
+
 
 
 }
