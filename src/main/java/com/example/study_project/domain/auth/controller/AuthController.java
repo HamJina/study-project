@@ -36,7 +36,7 @@ public class AuthController{
 
     //로그인
     @PostMapping("/login")
-    public ResponseEntity<GlobalResponse<Map<String, String>>> loginUser(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity loginUser(@RequestBody LoginDTO loginDTO) {
         try {
             // 1️⃣ 사용자 인증 시도 (loginDTO에서 username과 password를 추출해서 인증객체 생성하기), 해당 인증객체 authenticationManager에세 전달
             Authentication authentication = authenticationManager.authenticate(
@@ -52,10 +52,10 @@ public class AuthController{
             responseData.put("accessToken", accessToken);
             responseData.put("refreshToken", refreshToken);
 
-            return ResponseEntity.ok(GlobalResponse.success(200 ,responseData));
+            return ResponseEntity.ok().body(responseData);
         } catch (AuthenticationException e) {
-            // 4️⃣ 실패 응답 데이터 구성 (Map으로 감싸기)
-            throw new CustomException(ErrorCode.INVALID_USER_OR_PASSWORD);
+            // 4️⃣ 실패 응답 데이터 구성
+            throw new CustomException(ErrorCode.FAILURE_LOGIN);
         }
     }
 
