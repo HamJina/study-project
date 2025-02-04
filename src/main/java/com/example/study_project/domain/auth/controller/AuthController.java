@@ -66,28 +66,27 @@ public class AuthController{
         String refresh = reissueDTO.getRefreshToken();
 
         if (refresh == null) {
-            // refresh token이 없으면 400 Bad Request 반환
-            return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
+            // refresh token이 없으면
+            throw new CustomException(ErrorCode.TOKEN_IS_NOT_EXIST);
         }
 
         // expired check
         try {
             jwtUtil.isExpired(refresh);
         } catch (ExpiredJwtException e) {
-            // refresh token 만료 시 400 Bad Request 반환
-            return new ResponseEntity<>("refresh token expired", HttpStatus.BAD_REQUEST);
+            // refresh token 만료 시
+            throw new CustomException(ErrorCode.TOKEN_IS_EXPIRED);
         }
 
         // refresh 토큰이 refresh인지 확인 (발급 시 페이로드에 명시)
         String category = jwtUtil.getCategory(refresh);
         if (!category.equals("refreshToken")) {
             // refresh token이 아닌 경우 400 Bad Request 반환
-            return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
+            throw new CustomException(ErrorCode.TOKEN_IS_NOT_EXIST);
         }
 
         // refresh 토큰에서 username과 role을 추출하여 새로운 access token과 refresh token 생성
         String username = jwtUtil.getUsername(refresh);
-        String role = jwtUtil.getRole(refresh);
 
         // 새로운 JWT(access token)과 refresh token 생성
         String newAccess = jwtUtil.createJwt("accessToken", username, 60*60*10L);  // accessToken 재발급
@@ -98,10 +97,9 @@ public class AuthController{
         responseData.put("accessToken", newAccess);
         responseData.put("refreshToken", newRefresh);
         responseData.put("message", "새로운 토큰이 발급되었습니다.");
-        responseData.put("isPossible", "true");
 
         // 응답 반환
-        return ResponseEntity.ok(GlobalResponse.success(200, responseData));
+        return ResponseEntity.ok().body(responseData);
     }
 
 

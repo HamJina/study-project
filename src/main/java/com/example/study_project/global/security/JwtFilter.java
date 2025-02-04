@@ -4,6 +4,8 @@ package com.example.study_project.global.security;
 import com.example.study_project.domain.user.dto.CustomUserDetails;
 import com.example.study_project.domain.user.entity.User;
 import com.example.study_project.domain.user.repository.UserRepository;
+import com.example.study_project.global.error.exception.CustomException;
+import com.example.study_project.global.error.exception.ErrorCode;
 import com.example.study_project.global.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -48,19 +50,13 @@ public class JwtFilter extends OncePerRequestFilter {
             jwtUtil.isExpired(token); // 토큰 만료 확인
         } catch (ExpiredJwtException e) {
             // 토큰 만료시 응답 처리
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
-            PrintWriter writer = response.getWriter();
-            writer.print("access token expired");
-            return;
+            throw new CustomException(ErrorCode.TOKEN_IS_EXPIRED);
         }
 
         // 토큰에서 category가 accessToken인지 확인 (페이로드에 명시되어 있다고 가정)
         String category = jwtUtil.getCategory(token);
         if (!category.equals("accessToken")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
-            PrintWriter writer = response.getWriter();
-            writer.print("invalid access token");
-            return;
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
 
         // 토큰에서 username과 role을 획득
@@ -70,20 +66,14 @@ public class JwtFilter extends OncePerRequestFilter {
         // DB에서 사용자 정보 조회 (username)
         User userEntity = userRepository.findByUsername(username);
         if (userEntity == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
-            PrintWriter writer = response.getWriter();
-            writer.print("User not found");
-            return;
+            throw new CustomException(ErrorCode.INVALID_USER_OR_PASSWORD);
         }
 
-        // UserDetails에 회원 정보 객체 담기
+        // ✅ UserDetails 생성 후 SecurityContext 업데이트
         CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
-
-        // 스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 
-        // 세션에 사용자 등록
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+        SecurityContextHolder.getContext().setAuthentication(authToken);  // 🔥 새 토큰으로 인증 업데이트
 
         // 다음 필터로 요청 전달
         filterChain.doFilter(request, response);
