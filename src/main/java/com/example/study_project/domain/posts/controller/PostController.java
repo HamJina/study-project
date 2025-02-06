@@ -6,6 +6,7 @@ import com.example.study_project.domain.posts.service.PostService;
 import com.example.study_project.domain.user.entity.User;
 import com.example.study_project.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,7 +46,11 @@ public class PostController {
         return ResponseEntity.ok().body(responseData);
     }
 
+    /*//모집글 전체 목록 조회(페이징 구현)
+    @GetMapping("/list")
+    public ResponseEntity getPostList(@Param("lastAlbumId") long lastAlbumId, @Param("size") int size) {
 
+    }*/
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
