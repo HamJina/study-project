@@ -38,6 +38,9 @@ public class Post {
 
     private LocalDateTime createdDate = LocalDateTime.now();
 
-
+    //조회수 증가 메소드
+    public void increaseHits() {
+        this.hits += 1;
+    }
 
 }

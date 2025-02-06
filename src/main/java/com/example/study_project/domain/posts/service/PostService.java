@@ -5,11 +5,16 @@ import com.example.study_project.domain.posts.dto.response.PostResponseDTO;
 import com.example.study_project.domain.posts.entity.Post;
 import com.example.study_project.domain.posts.repository.PostRepository;
 import com.example.study_project.domain.user.entity.User;
+import com.example.study_project.global.error.exception.CustomException;
+import com.example.study_project.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PostService {
 
     private final PostRepository postRepository;
@@ -31,5 +36,15 @@ public class PostService {
         postRepository.save(post);
 
         return PostResponseDTO.createToDTO(post);
+    }
+
+    //@Cacheable(value = "postCache", key = "#postId", cacheManager = "boardCacheManager")
+    public PostResponseDTO detailPost(long postId) {
+        //id를 이용해서 모집글을 조회한다.
+        Post findPost = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_POST));
+        //조회된 모집글은 조회수가 증가한다.
+        findPost.increaseHits();
+        //entity -> dto
+        return PostResponseDTO.createToDTO(findPost);
     }
 }

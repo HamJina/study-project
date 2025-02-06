@@ -1,20 +1,14 @@
 package com.example.study_project.domain.user.service;
 
 import com.example.study_project.domain.user.dto.request.JoinDTO;
-import com.example.study_project.domain.user.dto.response.UserResponseDTO;
 import com.example.study_project.domain.user.entity.User;
 import com.example.study_project.domain.user.repository.UserRepository;
 import com.example.study_project.global.error.exception.CustomException;
 import com.example.study_project.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +22,7 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
 
+    //모집글 작성
     @PostMapping("/create")
     public ResponseEntity createPost(@RequestBody PostDTO postDTO) {
         User currentUser = getCurrentUser();
@@ -35,6 +33,19 @@ public class PostController {
 
         return ResponseEntity.ok().body(responseData);
     }
+
+    //모집글 상세조회
+    @GetMapping("/{postId}")
+    public ResponseEntity detailPost(@PathVariable long postId) {
+        PostResponseDTO post = postService.detailPost(postId);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("post", post);
+
+        return ResponseEntity.ok().body(responseData);
+    }
+
+
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
