@@ -1,7 +1,7 @@
 package com.example.study_project.domain.auth.service;
 
 
-import com.example.study_project.domain.auth.RefreshTokenRepository;
+import com.example.study_project.domain.auth.repository.RefreshTokenRepository;
 import com.example.study_project.domain.auth.entity.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

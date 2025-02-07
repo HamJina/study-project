@@ -83,6 +83,18 @@ public class PostController {
         return ResponseEntity.ok().body(responseData);
     }
 
+    //모집글 검색(제목을 기준으로 검색)
+    @GetMapping("/search/keyword")
+    public ResponseEntity getKeywordPosts(@RequestParam(required = false) Long lastPostId,
+                                          @RequestParam(defaultValue = "10") int pageSize,
+                                          @RequestParam(defaultValue = "") String keyword) {
+        Pageable pageable = PageRequest.of(0, pageSize);
+        User currentUser = getCurrentUser();
+        Slice<PostResponseDTO> keywordPosts = postService.getKeywordPosts(lastPostId, pageable, keyword, currentUser);
+
+        return ResponseEntity.ok().body(keywordPosts);
+    }
+
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userService.getUserByUserId(authentication.getName());

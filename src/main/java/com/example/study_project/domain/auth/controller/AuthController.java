@@ -1,17 +1,14 @@
 package com.example.study_project.domain.auth.controller;
 
-import com.example.study_project.domain.auth.RefreshTokenRepository;
 import com.example.study_project.domain.auth.dto.ReissueDTO;
 import com.example.study_project.domain.auth.service.RefreshTokenService;
 import com.example.study_project.domain.user.dto.request.LoginDTO;
 import com.example.study_project.domain.user.service.UserService;
-import com.example.study_project.global.common.response.GlobalResponse;
 import com.example.study_project.global.error.exception.CustomException;
 import com.example.study_project.global.error.exception.ErrorCode;
 import com.example.study_project.global.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

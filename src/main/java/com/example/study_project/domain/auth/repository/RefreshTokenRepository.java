@@ -1,4 +1,4 @@
-package com.example.study_project.domain.auth;
+package com.example.study_project.domain.auth.repository;
 
 
 import com.example.study_project.domain.auth.entity.RefreshToken;

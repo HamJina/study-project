@@ -1,5 +1,6 @@
 package com.example.study_project.domain.posts.service;
 
+import com.example.study_project.domain.keyword.service.KeywordService;
 import com.example.study_project.domain.posts.dto.request.PostDTO;
 import com.example.study_project.domain.posts.dto.response.PostResponseDTO;
 import com.example.study_project.domain.posts.entity.Post;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final KeywordService keywordService;
 
     public PostResponseDTO createPost(PostDTO postDTO, User currentUser) {
         Post post = new Post();
@@ -75,5 +77,17 @@ public class PostService {
         return hotRecruitmentPosts.stream()
                 .map(PostResponseDTO::createToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Slice<PostResponseDTO> getKeywordPosts(Long lastPostId, Pageable pageable, String keyword, User currentUser) {
+        //검색 결과 list반환
+        Slice<Post> keywordPosts = postRepository.findKeywordPostsByPage(lastPostId, pageable, keyword);
+
+        //최신 검색어에 추가(첫 검색시)
+        if(lastPostId == null) {
+            keywordService.createLatestKeyword(currentUser, keyword);
+        }
+
+        return keywordPosts.map(PostResponseDTO::createToDTO);
     }
 }
