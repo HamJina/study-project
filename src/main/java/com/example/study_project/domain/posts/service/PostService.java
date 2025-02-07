@@ -60,4 +60,12 @@ public class PostService {
         // Entity -> DTO 변환
         return postSlice.map(PostResponseDTO::createToDTO);
     }
+
+    public List<PostResponseDTO> getNewPost(int size) {
+        List<Post> posts = postRepository.findLatestRecruitmentPosts(size);
+        // Entity -> DTO 변환
+        return posts.stream()
+                .map(PostResponseDTO::createToDTO)
+                .collect(Collectors.toList());
+    }
 }

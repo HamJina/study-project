@@ -9,4 +9,5 @@ import java.util.List;
 public interface PostRepositoryCustom {
 
     Slice<Post> findPostsByPage(Long lastPostId, Pageable pageable);
+    List<Post> findLatestRecruitmentPosts(int size);
 }

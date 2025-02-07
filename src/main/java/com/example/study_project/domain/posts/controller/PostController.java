@@ -61,6 +61,17 @@ public class PostController {
         return ResponseEntity.ok().body(postList);
     }
 
+    //New 모집글 조회(최신 5개만)
+    @GetMapping("/new")
+    public ResponseEntity getNewPost(@RequestParam(defaultValue = "5") int size) {
+        List<PostResponseDTO> latestPosts = postService.getNewPost(size);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("latestPosts", latestPosts);
+
+        return ResponseEntity.ok().body(responseData);
+    }
+
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userService.getUserByUserId(authentication.getName());

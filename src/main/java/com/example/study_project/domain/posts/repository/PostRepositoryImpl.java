@@ -39,4 +39,16 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
 
         return new SliceImpl<>(hasNext ? posts.subList(0, pageable.getPageSize()) : posts, pageable, hasNext);
     }
+
+    @Override
+    public List<Post> findLatestRecruitmentPosts(int size) {
+        QPost post = QPost.post;
+
+        return queryFactory
+                .selectFrom(post)
+                .where(post.recruited.isTrue()) // 모집중인 글만 필터링
+                .orderBy(post.createdDate.desc()) // 최신순 정렬
+                .limit(size) // 요청한 개수만큼 제한
+                .fetch();
+    }
 }
