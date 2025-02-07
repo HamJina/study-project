@@ -68,4 +68,12 @@ public class PostService {
                 .map(PostResponseDTO::createToDTO)
                 .collect(Collectors.toList());
     }
+
+    public List<PostResponseDTO> getHotPost(int size) {
+        List<Post> hotRecruitmentPosts = postRepository.findHotRecruitmentPosts(size);
+
+        return hotRecruitmentPosts.stream()
+                .map(PostResponseDTO::createToDTO)
+                .collect(Collectors.toList());
+    }
 }

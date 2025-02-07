@@ -72,6 +72,17 @@ public class PostController {
         return ResponseEntity.ok().body(responseData);
     }
 
+    //Hot 모집글 목록 조회
+    @GetMapping("/hot")
+    public ResponseEntity getHotPost(@RequestParam(defaultValue = "5") int size) {
+        List<PostResponseDTO> hotPosts = postService.getHotPost(size);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("hotPosts", hotPosts);
+
+        return ResponseEntity.ok().body(responseData);
+    }
+
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userService.getUserByUserId(authentication.getName());

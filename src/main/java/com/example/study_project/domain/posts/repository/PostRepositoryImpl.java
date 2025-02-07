@@ -4,15 +4,11 @@ import com.example.study_project.domain.posts.entity.Post;
 import com.example.study_project.domain.posts.entity.QPost;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
-
-import static com.example.study_project.domain.posts.entity.QPost.post;
 
 
 public class PostRepositoryImpl implements PostRepositoryCustom{
@@ -49,6 +45,17 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
                 .where(post.recruited.isTrue()) // 모집중인 글만 필터링
                 .orderBy(post.createdDate.desc()) // 최신순 정렬
                 .limit(size) // 요청한 개수만큼 제한
+                .fetch();
+    }
+
+    @Override
+    public List<Post> findHotRecruitmentPosts(int size) {
+        QPost post = QPost.post;
+        return queryFactory
+                .selectFrom(post)
+                .where(post.recruited.isTrue())
+                .orderBy(post.hits.desc(), post.createdDate.desc())
+                .limit(size)
                 .fetch();
     }
 }
