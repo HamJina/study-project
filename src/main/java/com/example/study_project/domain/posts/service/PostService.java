@@ -83,6 +83,9 @@ public class PostService {
         //검색 결과 list반환
         Slice<Post> keywordPosts = postRepository.findKeywordPostsByPage(lastPostId, pageable, keyword);
 
+        if(keywordPosts.isEmpty()) {
+            throw new CustomException(ErrorCode.SEARCHEDPOST_IS_NOT_EXIST);
+        }
         //최신 검색어에 추가(첫 검색시)
         if(lastPostId == null) {
             keywordService.createLatestKeyword(currentUser, keyword);

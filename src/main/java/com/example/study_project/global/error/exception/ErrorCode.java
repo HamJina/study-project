@@ -17,6 +17,10 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "타당하지 않은 토큰입니다."),
 
     NOT_EXIST_POST(HttpStatus.BAD_REQUEST, "존재하지 않는 게시글입니다."),
+
+    KEYWORD_IS_EMPTY(HttpStatus.NOT_FOUND, "최신 검색어가 존재하지 않습니다."),
+
+    SEARCHEDPOST_IS_NOT_EXIST(HttpStatus.NOT_FOUND, "해당 검색어의 모집글이 존재하지 않습니다."),
     ;
 
     private final HttpStatus status;
