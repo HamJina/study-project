@@ -7,8 +7,10 @@ import com.example.study_project.domain.keyword.service.KeywordService;
 import com.example.study_project.domain.posts.dto.request.PostDTO;
 import com.example.study_project.domain.posts.dto.response.PostResponseDTO;
 import com.example.study_project.domain.posts.entity.Post;
+import com.example.study_project.domain.posts.entity.Scrap;
 import com.example.study_project.domain.posts.repository.PostRepository;
 import com.example.study_project.domain.posts.repository.PostRepositoryCustom;
+import com.example.study_project.domain.posts.repository.ScrapRespository;
 import com.example.study_project.domain.user.entity.User;
 import com.example.study_project.global.error.exception.CustomException;
 import com.example.study_project.global.error.exception.ErrorCode;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +34,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final KeywordService keywordService;
     private final ApplyRepository applyRepository;
+    private final ScrapRespository scrapRespository;
 
     public PostResponseDTO createPost(PostDTO postDTO, User currentUser) {
         Post post = new Post();
@@ -123,7 +127,6 @@ public class PostService {
     }
 
     public void deletePost(Long postId, User currentUser) {
-
         Post findPost = postRepository.findById(postId).orElseThrow(() -> {
             throw new CustomException(ErrorCode.NOT_EXIST_POST);
         });
@@ -153,5 +156,41 @@ public class PostService {
                 return PostStatus.AFTER_APPLY;
             }
         }
+    }
+
+    public void scrapPost(Long postId, User currentUser) {
+        Post findPost = postRepository.findById(postId).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.NOT_EXIST_POST);
+        });
+
+        Scrap scrap = new Scrap();
+
+        scrap.setUser(currentUser);
+        scrap.setPost(findPost);
+
+        scrapRespository.save(scrap);
+    }
+
+    public List<PostResponseDTO> scrapPostList(User currentUser) {
+        List<Scrap> findScrapList = scrapRespository.findByUserId(currentUser.getId());
+        if(findScrapList.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_EXIST_SCRAP);
+        }
+
+        return findScrapList.stream()
+                .map(scrap -> PostResponseDTO.createToDTO(scrap.getPost()))
+                .collect(Collectors.toList());
+    }
+
+    public List<PostResponseDTO> recruitingPost(User currentUser) {
+        List<Post> recruitingPosts = postRepository.findByWriterIdAndRecruitedTrue(currentUser.getId());
+
+        if (recruitingPosts.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_EXIST_RECRUITING_POST);
+        }
+
+        return recruitingPosts.stream()
+                .map(PostResponseDTO::createToDTO)
+                .collect(Collectors.toList());
     }
 }

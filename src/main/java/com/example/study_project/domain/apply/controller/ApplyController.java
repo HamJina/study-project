@@ -35,6 +35,12 @@ public class ApplyController {
         return ResponseEntity.ok().body(responseData);
     }
 
+    //나의 지원 현황 목록 조회
+    @GetMapping("/list")
+    public ResponseEntity myApplyList() {
+
+    }
+
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userService.getUserByUserId(authentication.getName());

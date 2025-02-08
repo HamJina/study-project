@@ -3,7 +3,6 @@ package com.example.study_project.domain.posts.controller;
 import com.example.study_project.domain.enums.PostStatus;
 import com.example.study_project.domain.posts.dto.request.PostDTO;
 import com.example.study_project.domain.posts.dto.response.PostResponseDTO;
-import com.example.study_project.domain.posts.entity.Post;
 import com.example.study_project.domain.posts.service.PostService;
 import com.example.study_project.domain.user.entity.User;
 import com.example.study_project.domain.user.service.UserService;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -124,6 +122,43 @@ public class PostController {
         Slice<PostResponseDTO> keywordPosts = postService.getKeywordPosts(lastPostId, pageable, keyword, currentUser);
 
         return ResponseEntity.ok().body(keywordPosts);
+    }
+
+    //모집글 스크랩 설정
+    @PostMapping("/scrap/{postId}")
+    public ResponseEntity scrapPost(@PathVariable Long postId) {
+        User currentUser = getCurrentUser();
+        postService.scrapPost(postId, currentUser);
+
+        Map<String, String> responseData = new HashMap<>();
+        responseData.put("message", "스크랩이 설정되었습니다.");
+
+        return ResponseEntity.ok().body(responseData);
+    }
+
+    //스크랩 모집글 목록 조회
+    @GetMapping("/scrap/list")
+    public ResponseEntity scrapPostList() {
+        User currentUser = getCurrentUser();
+        List<PostResponseDTO> scrapList = postService.scrapPostList(currentUser);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("scrapList", scrapList);
+
+        return ResponseEntity.ok().body(responseData);
+
+    }
+
+    //내가 모집중인 모집글 목록(recruited = true, writer = me)
+    @GetMapping("/recruiting")
+    public ResponseEntity recruitingPost() {
+        User currentUser = getCurrentUser();
+        List<PostResponseDTO> postResponse = postService.recruitingPost(currentUser);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("postResponse", postResponse);
+
+        return ResponseEntity.ok().body(responseData);
     }
 
     private PostStatus checkStatus(Long postId, User currentUser) {
