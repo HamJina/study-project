@@ -40,6 +40,19 @@ public class PostController {
         return ResponseEntity.ok().body(responseData);
     }
 
+    //모집글 수정
+    @PutMapping("/{postId}")
+    public ResponseEntity updatePost(@RequestBody PostDTO postDTO, @PathVariable Long postId) {
+        User currentUser = getCurrentUser();
+        PostResponseDTO postResponse = postService.updatePost(postDTO, currentUser, postId);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("post", postResponse);
+
+        return ResponseEntity.ok().body(responseData);
+
+    }
+
     //모집글 상세조회
     @GetMapping("/{postId}")
     public ResponseEntity detailPost(@PathVariable long postId) {

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,11 +87,34 @@ public class PostService {
         if(keywordPosts.isEmpty()) {
             throw new CustomException(ErrorCode.SEARCHEDPOST_IS_NOT_EXIST);
         }
+
         //최신 검색어에 추가(첫 검색시)
         if(lastPostId == null) {
             keywordService.createLatestKeyword(currentUser, keyword);
         }
 
         return keywordPosts.map(PostResponseDTO::createToDTO);
+    }
+
+    public PostResponseDTO updatePost(PostDTO postDTO, User currentUser, Long postId) {
+        //수정할 모집글 정보 불러오기
+        Post findPost = postRepository.findById(postId).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.NOT_EXIST_POST);
+        });
+
+        //모집글을 수정하려는 사용자가 모집글 작성자인지 확인
+        if(currentUser != findPost.getWriter()) {
+            throw new CustomException(ErrorCode.NOT_UNAUTHORIZED);
+        }
+
+        //수정 권한이 존재한다면
+        findPost.setTitle(postDTO.getTitle());
+        findPost.setContent(postDTO.getContent());
+        findPost.setTags(postDTO.getTags());
+        findPost.setFiled(postDTO.getFiled());
+        findPost.setTotalPeopleNum(postDTO.getTotalPeopleNum());
+
+        return PostResponseDTO.createToDTO(findPost);
+
     }
 }

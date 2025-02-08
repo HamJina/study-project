@@ -21,6 +21,8 @@ public enum ErrorCode {
     KEYWORD_IS_EMPTY(HttpStatus.NOT_FOUND, "최신 검색어가 존재하지 않습니다."),
 
     SEARCHEDPOST_IS_NOT_EXIST(HttpStatus.NOT_FOUND, "해당 검색어의 모집글이 존재하지 않습니다."),
+
+    NOT_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "모집글 수정, 삭제 권한이 없습니다.")
     ;
 
     private final HttpStatus status;
