@@ -120,11 +120,11 @@ public class PostController {
         return ResponseEntity.ok().body(keywordPosts);
     }
 
-    //모집글 지원
+    /*//모집글 지원
     @PostMapping("/apply/{postId}")
     public ResponseEntity applyPost() {
 
-    }
+    }*/
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

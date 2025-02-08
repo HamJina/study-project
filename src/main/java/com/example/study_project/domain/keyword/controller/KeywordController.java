@@ -8,9 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +29,17 @@ public class KeywordController {
 
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("latestKeywords", latestKeywords);
+
+        return ResponseEntity.ok().body(responseData);
+    }
+
+    @DeleteMapping("/{keywordId}")
+    public ResponseEntity deleteKeyword(@PathVariable Long keywordId) {
+        User currentUser = getCurrentUser();
+        keywordService.deleteKeyword(keywordId, currentUser);
+
+        Map<String, String> responseData = new HashMap<>();
+        responseData.put("message", "검색어가 삭제되었습니다.");
 
         return ResponseEntity.ok().body(responseData);
     }

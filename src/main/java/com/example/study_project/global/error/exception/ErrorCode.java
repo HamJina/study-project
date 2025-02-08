@@ -22,7 +22,8 @@ public enum ErrorCode {
 
     SEARCHEDPOST_IS_NOT_EXIST(HttpStatus.NOT_FOUND, "해당 검색어의 모집글이 존재하지 않습니다."),
 
-    NOT_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "모집글 수정, 삭제 권한이 없습니다.")
+    NOT_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
+    NOT_EXIST_KEYWORD(HttpStatus.NOT_FOUND, "존재하지 않는 검색어입니다.")
     ;
 
     private final HttpStatus status;

@@ -43,4 +43,16 @@ public class KeywordService {
                 .map((keyword -> new KeywordDTO(keyword.getId(), keyword.getContent(), keyword.getSearchedDate())))
                 .collect(Collectors.toList());
     }
+
+    public void deleteKeyword(Long keywordId, User currentUser) {
+        Keyword findKeyword = keywordRepository.findById(keywordId).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.NOT_EXIST_KEYWORD);
+        });
+
+        if(currentUser != findKeyword.getUser()) {
+            throw new CustomException(ErrorCode.NOT_UNAUTHORIZED);
+        }
+
+        keywordRepository.delete(findKeyword);
+    }
 }
