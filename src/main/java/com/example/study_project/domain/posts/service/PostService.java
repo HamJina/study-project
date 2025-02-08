@@ -117,4 +117,18 @@ public class PostService {
         return PostResponseDTO.createToDTO(findPost);
 
     }
+
+    public void deletePost(Long postId, User currentUser) {
+
+        Post findPost = postRepository.findById(postId).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.NOT_EXIST_POST);
+        });
+
+        //모집글을 삭제하려는 사용자가 모집글 작성자인지 확인
+        if(currentUser != findPost.getWriter()) {
+            throw new CustomException(ErrorCode.NOT_UNAUTHORIZED);
+        }
+
+        postRepository.delete(findPost);
+    }
 }

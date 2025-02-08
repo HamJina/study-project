@@ -53,6 +53,18 @@ public class PostController {
 
     }
 
+    //모집글 삭제
+    @DeleteMapping("/{postId}")
+    public ResponseEntity deletePost(@PathVariable Long postId) {
+        User currentUser = getCurrentUser();
+        postService.deletePost(postId, currentUser);
+
+        Map<String, String> responseData = new HashMap<>();
+        responseData.put("message", "모집글이 삭제되었습니다.");
+
+        return ResponseEntity.ok().body(responseData);
+    }
+
     //모집글 상세조회
     @GetMapping("/{postId}")
     public ResponseEntity detailPost(@PathVariable long postId) {
@@ -106,6 +118,12 @@ public class PostController {
         Slice<PostResponseDTO> keywordPosts = postService.getKeywordPosts(lastPostId, pageable, keyword, currentUser);
 
         return ResponseEntity.ok().body(keywordPosts);
+    }
+
+    //모집글 지원
+    @PostMapping("/apply/{postId}")
+    public ResponseEntity applyPost() {
+
     }
 
     private User getCurrentUser() {
