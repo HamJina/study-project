@@ -1,5 +1,6 @@
 package com.example.study_project.domain.posts.controller;
 
+import com.example.study_project.domain.enums.PostStatus;
 import com.example.study_project.domain.posts.dto.request.PostDTO;
 import com.example.study_project.domain.posts.dto.response.PostResponseDTO;
 import com.example.study_project.domain.posts.entity.Post;
@@ -68,10 +69,15 @@ public class PostController {
     //모집글 상세조회
     @GetMapping("/{postId}")
     public ResponseEntity detailPost(@PathVariable long postId) {
+        User currentUser = getCurrentUser();
         PostResponseDTO post = postService.detailPost(postId);
+
+        //자신이 해당 모집글의 지원자인지 작성자인지 확인하는 코드
+        PostStatus postStatus = checkStatus(postId, currentUser);
 
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("post", post);
+        responseData.put("postStatus", postStatus);
 
         return ResponseEntity.ok().body(responseData);
     }
@@ -118,6 +124,10 @@ public class PostController {
         Slice<PostResponseDTO> keywordPosts = postService.getKeywordPosts(lastPostId, pageable, keyword, currentUser);
 
         return ResponseEntity.ok().body(keywordPosts);
+    }
+
+    private PostStatus checkStatus(Long postId, User currentUser) {
+        return postService.checkStatus(postId, currentUser);
     }
 
     private User getCurrentUser() {

@@ -1,5 +1,8 @@
 package com.example.study_project.domain.posts.service;
 
+import com.example.study_project.domain.apply.entity.Apply;
+import com.example.study_project.domain.apply.repository.ApplyRepository;
+import com.example.study_project.domain.enums.PostStatus;
 import com.example.study_project.domain.keyword.service.KeywordService;
 import com.example.study_project.domain.posts.dto.request.PostDTO;
 import com.example.study_project.domain.posts.dto.response.PostResponseDTO;
@@ -27,6 +30,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final KeywordService keywordService;
+    private final ApplyRepository applyRepository;
 
     public PostResponseDTO createPost(PostDTO postDTO, User currentUser) {
         Post post = new Post();
@@ -130,5 +134,24 @@ public class PostService {
         }
 
         postRepository.delete(findPost);
+    }
+
+    public PostStatus checkStatus(Long postId, User currentUser) {
+        //작성자인지 확인
+        Post findPost = postRepository.findById(postId).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.NOT_EXIST_POST);
+        });
+
+        if(findPost.getWriter() == currentUser) {
+            //작성자
+            return PostStatus.WRITER;
+        } else{
+            Apply findApply = applyRepository.findByPostIdAndUserId(postId, currentUser.getId());
+            if(findApply == null) {
+                return PostStatus.BEFORE_APPLY;
+            } else {
+                return PostStatus.AFTER_APPLY;
+            }
+        }
     }
 }

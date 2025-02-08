@@ -25,7 +25,7 @@ public enum ErrorCode {
     NOT_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
     NOT_EXIST_KEYWORD(HttpStatus.NOT_FOUND, "존재하지 않는 검색어입니다."),
 
-    NOT_ELIGIBLE(HttpStatus.UNAUTHORIZED, "지원불가합니다.");
+    NOT_ELIGIBLE(HttpStatus.UNAUTHORIZED, "지원불가합니다."),
     ;
 
     private final HttpStatus status;
