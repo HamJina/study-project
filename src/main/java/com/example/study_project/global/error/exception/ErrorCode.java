@@ -26,6 +26,7 @@ public enum ErrorCode {
     NOT_EXIST_KEYWORD(HttpStatus.NOT_FOUND, "존재하지 않는 검색어입니다."),
 
     NOT_ELIGIBLE(HttpStatus.UNAUTHORIZED, "지원불가합니다."),
+    ALREADY_APPLY(HttpStatus.BAD_REQUEST, "이미 지원된 모집글입니다."),
     ;
 
     private final HttpStatus status;

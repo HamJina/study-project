@@ -32,6 +32,11 @@ public class ApplyService {
             throw new CustomException(ErrorCode.NOT_ELIGIBLE);
         }
 
+        Apply findApply = applyRepository.findByPostIdAndUserId(postId, currentUser.getId());
+        if(findApply != null) {
+            throw new CustomException(ErrorCode.ALREADY_APPLY);
+        }
+
         apply.setPost(findPost);
         apply.setUser(currentUser);
         apply.setMessage(applyDTO.getMessage());
