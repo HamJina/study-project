@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ScrapRespository extends JpaRepository<Scrap, Long> {
-    public List<Scrap> findByUserId(Long userId);
+    List<Scrap> findByUserId(Long userId);
 }

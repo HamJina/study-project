@@ -14,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -45,5 +48,13 @@ public class ApplyService {
         applyRepository.save(apply);
 
         return ApplyResponseDTO.createToDTO(apply);
+    }
+
+    public List<ApplyResponseDTO> myApplyList(User currentUser) {
+        List<Apply> applyList = applyRepository.findByUserId(currentUser.getId());
+
+        return applyList.stream()
+                .map(ApplyResponseDTO::createToDTO)
+                .collect(Collectors.toList());
     }
 }

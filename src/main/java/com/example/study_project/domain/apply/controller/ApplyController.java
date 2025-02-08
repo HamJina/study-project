@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -38,8 +39,22 @@ public class ApplyController {
     //나의 지원 현황 목록 조회
     @GetMapping("/list")
     public ResponseEntity myApplyList() {
+        User currentUser = getCurrentUser();
 
+        List<ApplyResponseDTO> applyList = applyService.myApplyList(currentUser);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("applyList", applyList);
+
+        return ResponseEntity.ok().body(responseData);
     }
+
+    /*//수락 대기중인 스터디원 조회
+    @GetMapping("/waiting/{postId}")
+    public ResponseEntity waitingPeopleList(@PathVariable Long postId) {
+        User currentUser = getCurrentUser();
+
+    }*/
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
