@@ -1,5 +1,6 @@
 package com.example.study_project.domain.apply.controller;
 
+import com.example.study_project.domain.apply.dto.request.DenyDTO;
 import com.example.study_project.domain.apply.dto.request.ApplyDTO;
 import com.example.study_project.domain.apply.dto.response.ApplyResponseDTO;
 import com.example.study_project.domain.apply.service.ApplyService;
@@ -70,6 +71,18 @@ public class ApplyController {
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("applyResponse", applyResponse);
         responseData.put("message", "수락되었습니다.");
+
+        return ResponseEntity.ok().body(responseData);
+    }
+
+    //모집글 지원 거절하기
+    @PutMapping("/deny/{applyId}")
+    public ResponseEntity denyApply(@PathVariable Long applyId, @RequestBody DenyDTO denyDTO) {
+        User currentUser = getCurrentUser();
+        ApplyResponseDTO applyResponse = applyService.denyApply(applyId, currentUser, denyDTO);
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("applyResponse", applyResponse);
+        responseData.put("message", "거절되었습니다.");
 
         return ResponseEntity.ok().body(responseData);
     }

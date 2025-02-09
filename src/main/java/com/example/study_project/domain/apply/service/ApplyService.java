@@ -1,9 +1,12 @@
 package com.example.study_project.domain.apply.service;
 
 import com.example.study_project.domain.apply.dto.request.ApplyDTO;
+import com.example.study_project.domain.apply.dto.request.DenyDTO;
 import com.example.study_project.domain.apply.dto.response.ApplyResponseDTO;
 import com.example.study_project.domain.apply.entity.Apply;
+import com.example.study_project.domain.apply.entity.DenyMessage;
 import com.example.study_project.domain.apply.repository.ApplyRepository;
+import com.example.study_project.domain.apply.repository.DenyMessageRepository;
 import com.example.study_project.domain.enums.ApplyStatus;
 import com.example.study_project.domain.posts.entity.Post;
 import com.example.study_project.domain.posts.repository.PostRepository;
@@ -25,6 +28,7 @@ public class ApplyService {
 
     private final ApplyRepository applyRepository;
     private final PostRepository postRepository;
+    private final DenyMessageRepository denyMessageRepository;
 
     public ApplyResponseDTO applyPost(ApplyDTO applyDTO, User currentUser, Long postId) {
         Apply apply = new Apply();
@@ -74,6 +78,20 @@ public class ApplyService {
         Apply findApply = applyRepository.findById(applyId).get();
         if(findApply.getPost().getWriter() == currentUser) {
             findApply.setStatus(ApplyStatus.ACCEPTED);
+            return ApplyResponseDTO.createToDTO(findApply);
+        }
+        return null;
+    }
+
+    public ApplyResponseDTO denyApply(Long applyId, User currentUser, DenyDTO denyDTO) {
+        Apply findApply = applyRepository.findById(applyId).get();
+        if(findApply.getPost().getWriter() == currentUser) {
+            findApply.setStatus(ApplyStatus.DENIED);
+
+            DenyMessage denyMessage = new DenyMessage();
+            denyMessage.setApply(findApply);
+            denyMessage.setMessage(denyDTO.getMessage());
+            denyMessageRepository.save(denyMessage);
 
             return ApplyResponseDTO.createToDTO(findApply);
         }
