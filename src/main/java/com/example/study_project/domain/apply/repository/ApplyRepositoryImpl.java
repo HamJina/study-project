@@ -3,6 +3,7 @@ package com.example.study_project.domain.apply.repository;
 import com.example.study_project.domain.apply.entity.Apply;
 import com.example.study_project.domain.apply.entity.QApply;
 import com.example.study_project.domain.enums.ApplyStatus;
+import com.example.study_project.domain.posts.entity.QPost;
 import com.example.study_project.domain.user.entity.QUser;
 import com.example.study_project.domain.user.entity.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,12 +25,15 @@ public class ApplyRepositoryImpl implements ApplyRepositoryCustom{
     public List<Apply> findByPostIdAndWaiting(Long postId) {
         QApply apply = QApply.apply;
         QUser user = QUser.user;
+        QPost post = QPost.post;
 
         return queryFactory
                 .selectFrom(apply)
-                .join(apply.user, user).fetchJoin()  // User를 fetch join
-                .join(apply.post, post).fetchJoin()
-                .where(apply.post.id.eq(postId), apply.status.eq(ApplyStatus.WAITING))
-                .fetch();
-    }
+                .join(apply.user, user).fetchJoin()  // User fetch join
+                .join(apply.post, post).fetchJoin()  // Post fetch join
+                .where(
+                        apply.post.id.eq(postId),
+                        apply.status.in(ApplyStatus.WAITING, ApplyStatus.ACCEPTED) // 상태 필터 수정
+                )
+                .fetch();    }
 }

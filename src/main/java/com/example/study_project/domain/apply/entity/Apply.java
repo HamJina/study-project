@@ -12,6 +12,7 @@ import lombok.Setter;
 public class Apply {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "apply_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

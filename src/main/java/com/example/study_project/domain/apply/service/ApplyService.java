@@ -69,4 +69,14 @@ public class ApplyService {
         }
         return null;
     }
+
+    public ApplyResponseDTO acceptApply(Long applyId, User currentUser) {
+        Apply findApply = applyRepository.findById(applyId).get();
+        if(findApply.getPost().getWriter() == currentUser) {
+            findApply.setStatus(ApplyStatus.ACCEPTED);
+
+            return ApplyResponseDTO.createToDTO(findApply);
+        }
+        return null;
+    }
 }

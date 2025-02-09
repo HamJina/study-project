@@ -61,6 +61,19 @@ public class ApplyController {
         return ResponseEntity.ok().body(responseData);
     }
 
+    //모집글 지원 수락하기
+    @PutMapping("/accept/{applyId}")
+    public ResponseEntity acceptApply(@PathVariable Long applyId) {
+        User currentUser = getCurrentUser();
+        ApplyResponseDTO applyResponse = applyService.acceptApply(applyId, currentUser);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("applyResponse", applyResponse);
+        responseData.put("message", "수락되었습니다.");
+
+        return ResponseEntity.ok().body(responseData);
+    }
+
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userService.getUserByUserId(authentication.getName());
