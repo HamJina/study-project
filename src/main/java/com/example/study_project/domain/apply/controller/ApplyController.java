@@ -49,12 +49,17 @@ public class ApplyController {
         return ResponseEntity.ok().body(responseData);
     }
 
-    /*//수락 대기중인 스터디원 조회
+    //수락 대기중인 스터디원 조회
     @GetMapping("/waiting/{postId}")
     public ResponseEntity waitingPeopleList(@PathVariable Long postId) {
         User currentUser = getCurrentUser();
+        List<ApplyResponseDTO> waitingList = applyService.waitingPeopleList(postId, currentUser);
 
-    }*/
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("waitingList", waitingList);
+
+        return ResponseEntity.ok().body(responseData);
+    }
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

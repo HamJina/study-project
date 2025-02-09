@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,5 +57,16 @@ public class ApplyService {
         return applyList.stream()
                 .map(ApplyResponseDTO::createToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public List<ApplyResponseDTO> waitingPeopleList(Long postId, User currentUser) {
+        User writer = postRepository.findById(postId).get().getWriter();
+        if(writer == currentUser) {
+            List<Apply> waitingList = applyRepository.findByPostIdAndWaiting(postId);
+            return waitingList.stream()
+                    .map(ApplyResponseDTO::createToDTO)
+                    .collect(Collectors.toList());
+        }
+        return null;
     }
 }
