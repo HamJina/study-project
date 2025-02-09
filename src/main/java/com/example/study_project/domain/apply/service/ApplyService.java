@@ -3,6 +3,7 @@ package com.example.study_project.domain.apply.service;
 import com.example.study_project.domain.apply.dto.request.ApplyDTO;
 import com.example.study_project.domain.apply.dto.request.DenyDTO;
 import com.example.study_project.domain.apply.dto.response.ApplyResponseDTO;
+import com.example.study_project.domain.apply.dto.response.DenyMessageResponseDTO;
 import com.example.study_project.domain.apply.entity.Apply;
 import com.example.study_project.domain.apply.entity.DenyMessage;
 import com.example.study_project.domain.apply.repository.ApplyRepository;
@@ -96,5 +97,11 @@ public class ApplyService {
             return ApplyResponseDTO.createToDTO(findApply);
         }
         return null;
+    }
+
+    public DenyMessageResponseDTO denyMessageCheck(Long applyId) {
+        DenyMessage findMessage = denyMessageRepository.findByApplyId(applyId);
+
+        return new DenyMessageResponseDTO(findMessage.getId(), findMessage.getMessage());
     }
 }
