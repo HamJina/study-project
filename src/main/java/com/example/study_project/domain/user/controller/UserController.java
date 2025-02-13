@@ -33,7 +33,7 @@ public class UserController {
     public ResponseEntity joinUser(@RequestBody JoinDTO joinDTO) {
         userService.joinUser(joinDTO);
         Map<String, String> data = new HashMap<>();
-        data.put("message", "회원가입에 성공하였습니다.");
+        data.put("message", "회원가입에 성공하였습니다. ㅎ");
 
         return ResponseEntity.ok().body(data);
     }
