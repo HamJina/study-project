@@ -104,4 +104,44 @@ public class ApplyService {
 
         return new DenyMessageResponseDTO(findMessage.getId(), findMessage.getMessage());
     }
+
+    public void studyJoin(Long applyId, User currentUser) {
+        Apply findApply = applyRepository.findById(applyId).orElseThrow(() ->
+        {
+            throw new CustomException(ErrorCode.NOT_EXIST_POST);
+        });
+
+        //해당 지원자인 경우에만 참여 요청 가능
+        if(findApply.getUser() != currentUser) {
+            throw new CustomException(ErrorCode.NOT_UNAUTHORIZED);
+        }
+
+        //모집인원이 다 찬 경우
+        if (findApply.getPost().getRecruitedPeopleNum() == findApply.getPost().getTotalPeopleNum()) {
+            throw new CustomException(ErrorCode.EXCEEDED_CAPACITY);
+        }
+
+        //지원목록들중 승인을 받은 경우에만 참여가능
+        if(findApply.getStatus() == ApplyStatus.ACCEPTED) {
+            findApply.setStatus(ApplyStatus.JOINED);
+        }
+    }
+
+    public List<ApplyResponseDTO> joinedPeople(Long postId, User currentUser) {
+        List<Apply> findJoinedPeople = applyRepository.findByPostIdAndStatus(postId, ApplyStatus.JOINED);
+        Post findPost = postRepository.findById(postId).get();
+
+        if(currentUser != findPost.getWriter()) {
+            throw new CustomException(ErrorCode.NOT_UNAUTHORIZED);
+        }
+
+        if(findJoinedPeople.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_EXIST_PEOPLE);
+        }
+
+       return findJoinedPeople.stream()
+                .map(apply -> ApplyResponseDTO.createToDTO(apply))
+                .collect(Collectors.toList());
+
+    }
 }

@@ -27,6 +27,10 @@ public enum ErrorCode {
 
     NOT_ELIGIBLE(HttpStatus.UNAUTHORIZED, "지원불가합니다."),
     ALREADY_APPLY(HttpStatus.BAD_REQUEST, "이미 지원된 모집글입니다."),
+    NOT_EXIST_APPLY(HttpStatus.BAD_REQUEST, "존재하지 않는 지원입니다."),
+    EXCEEDED_CAPACITY(HttpStatus.BAD_REQUEST, "수용인원이 초과되었습니다."),
+
+    NOT_EXIST_PEOPLE(HttpStatus.BAD_REQUEST, "참여자가 존재하지 않습니다."),
 
     NOT_EXIST_SCRAP(HttpStatus.BAD_REQUEST, "스크랩 목록이 존재하지 않습니다."),
     NOT_EXIST_RECRUITING_POST(HttpStatus.BAD_REQUEST, "모집중인 모집글이 존재하지 않습니다.")

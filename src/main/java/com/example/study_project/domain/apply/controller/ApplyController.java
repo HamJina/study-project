@@ -98,6 +98,29 @@ public class ApplyController {
         return ResponseEntity.ok().body(responseData);
     }
 
+    //수락된 모집글에 참여하기
+    @PutMapping("/study/join/{applyId}")
+    public ResponseEntity studyJoin(@PathVariable Long applyId) {
+        User currentUser = getCurrentUser();
+        applyService.studyJoin(applyId, currentUser);
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("message", "해당 스터디에 참여되었습니다.");
+
+        return ResponseEntity.ok().body(responseData);
+    }
+
+    //참여 완료된 스터디원 조회(ApplyStatus가 JOINED인 사람)
+    @GetMapping("/join/list/{postId}")
+    public ResponseEntity acceptedPeople(@PathVariable Long postId) {
+        User currentUser = getCurrentUser();
+        List<ApplyResponseDTO> applyResponse = applyService.joinedPeople(postId, currentUser);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("joinedList", applyResponse);
+
+        return ResponseEntity.ok().body(responseData);
+    }
+
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userService.getUserByUserId(authentication.getName());
