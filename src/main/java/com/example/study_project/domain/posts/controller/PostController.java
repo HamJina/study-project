@@ -85,7 +85,10 @@ public class PostController {
     public ResponseEntity getPostList( @RequestParam(required = false) Long lastPostId,
                                        @RequestParam(defaultValue = "10") int pageSize) {
         Pageable pageable = PageRequest.of(0, pageSize);
-        Slice<PostResponseDTO> postList = postService.getPostList(lastPostId, pageable);
+        List<PostResponseDTO> postList = postService.getPostList(lastPostId, pageable);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("postList", postList);
 
         return ResponseEntity.ok().body(postList);
     }

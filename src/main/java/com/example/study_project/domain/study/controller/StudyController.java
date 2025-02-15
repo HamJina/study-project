@@ -1,13 +1,16 @@
 package com.example.study_project.domain.study.controller;
 
 import com.example.study_project.domain.study.dto.StudyListResponseDTO;
+import com.example.study_project.domain.study.dto.StudyPeopleListResponseDTO;
 import com.example.study_project.domain.study.service.StudyService;
 import com.example.study_project.domain.user.entity.User;
 import com.example.study_project.domain.user.service.UserService;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -41,6 +44,17 @@ public class StudyController {
 
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("myStudyList", myStudyList);
+
+        return ResponseEntity.ok().body(responseData);
+    }
+
+    //진행중인 스터디의 스터디원 조회
+    @GetMapping("/people/list/{studyId}")
+    public ResponseEntity studyPeopleList(@PathVariable Long studyId) {
+        List<StudyPeopleListResponseDTO> studyPeopleList = studyService.studyPeopleList(studyId);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("studyPeopleList", studyPeopleList);
 
         return ResponseEntity.ok().body(responseData);
     }

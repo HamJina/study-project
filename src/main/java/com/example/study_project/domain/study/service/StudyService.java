@@ -8,6 +8,7 @@ import com.example.study_project.domain.enums.ApplyStatus;
 import com.example.study_project.domain.posts.entity.Post;
 import com.example.study_project.domain.posts.repository.PostRepository;
 import com.example.study_project.domain.study.dto.StudyListResponseDTO;
+import com.example.study_project.domain.study.dto.StudyPeopleListResponseDTO;
 import com.example.study_project.domain.study.entity.Study;
 import com.example.study_project.domain.study.entity.StudyPeople;
 import com.example.study_project.domain.study.repository.StudyPeopleRepository;
@@ -74,5 +75,13 @@ public class StudyService {
         }
 
         return  myStudyList;
+    }
+
+    public List<StudyPeopleListResponseDTO> studyPeopleList(Long studyId) {
+        List<StudyPeopleListResponseDTO> studyPeopleList = studyPeopleRepository.findStudyPeopleList(studyId);
+        if(studyPeopleList.isEmpty()) {
+            throw new NullPointerException();
+        }
+        return studyPeopleList;
     }
 }

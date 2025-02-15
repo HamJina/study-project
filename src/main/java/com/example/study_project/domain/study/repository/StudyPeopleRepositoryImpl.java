@@ -1,6 +1,7 @@
 package com.example.study_project.domain.study.repository;
 
 import com.example.study_project.domain.study.dto.StudyListResponseDTO;
+import com.example.study_project.domain.study.dto.StudyPeopleListResponseDTO;
 import com.example.study_project.domain.study.entity.QStudy;
 import com.example.study_project.domain.study.entity.QStudyPeople;
 import com.querydsl.core.types.Projections;
@@ -8,6 +9,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
+
+import static com.example.study_project.domain.study.entity.QStudyPeople.studyPeople;
+import static com.example.study_project.domain.user.entity.QUser.user;
 
 public class StudyPeopleRepositoryImpl implements StudyPeopleRepositoryCustom{
 
@@ -30,6 +34,17 @@ public class StudyPeopleRepositoryImpl implements StudyPeopleRepositoryCustom{
                 .from(studyPeople)
                 .join(studyPeople.study, study) // 단순 join으로 변경
                 .where(studyPeople.user.id.eq(userId))
+                .fetch();
+    }
+
+    @Override
+    public List<StudyPeopleListResponseDTO> findStudyPeopleList(Long studyId) {
+        return queryFactory.select(Projections.constructor(
+                StudyPeopleListResponseDTO.class,
+                user.name, user.phoneNumber, user.email))
+                .from(studyPeople)
+                .join(studyPeople.user, user)
+                .where(studyPeople.study.id.eq(studyId))
                 .fetch();
     }
 

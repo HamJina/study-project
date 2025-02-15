@@ -65,13 +65,20 @@ public class PostService {
         return PostResponseDTO.createToDTO(findPost);
     }
 
-    public Slice<PostResponseDTO> getPostList(Long lastPostId, Pageable pageable) {
+    @Cacheable(cacheNames = "getPostList", key = "'postList:lastPostId:' + #lastPostId", cacheManager = "cacheManager")
+    public List<PostResponseDTO> getPostList(Long lastPostId, Pageable pageable) {
         Slice<Post> postSlice = postRepository.findPostsByPage(lastPostId, pageable);
 
         // Entity -> DTO 변환
-        return postSlice.map(PostResponseDTO::createToDTO);
+        List<PostResponseDTO> postResponseDTOList = postSlice.stream()
+                .map(PostResponseDTO::createToDTO)
+                .collect(Collectors.toList());
+
+        return postResponseDTOList;
     }
 
+
+    @Cacheable(cacheNames = "getNewPosts", key = "'newPosts:size:' + #size", cacheManager = "cacheManager")
     public List<PostResponseDTO> getNewPost(int size) {
         List<Post> posts = postRepository.findLatestRecruitmentPosts(size);
         // Entity -> DTO 변환
@@ -80,6 +87,7 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(cacheNames = "getHotPosts", key = "'hotPosts:size:' + #size", cacheManager = "cacheManager")
     public List<PostResponseDTO> getHotPost(int size) {
         List<Post> hotRecruitmentPosts = postRepository.findHotRecruitmentPosts(size);
 
