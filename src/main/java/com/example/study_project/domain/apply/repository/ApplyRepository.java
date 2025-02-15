@@ -10,5 +10,6 @@ public interface ApplyRepository extends JpaRepository<Apply, Long>, ApplyReposi
     Apply findByPostIdAndUserId(Long postId, Long userId);
     List<Apply> findByUserId(Long userId);
     List<Apply> findByPostIdAndStatus(Long postId, ApplyStatus status);
+    List<Apply> findByUserIdAndStatus(Long userId, ApplyStatus status);
 
 }

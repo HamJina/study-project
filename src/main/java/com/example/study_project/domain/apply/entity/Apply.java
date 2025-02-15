@@ -2,6 +2,7 @@ package com.example.study_project.domain.apply.entity;
 
 import com.example.study_project.domain.enums.ApplyStatus;
 import com.example.study_project.domain.posts.entity.Post;
+import com.example.study_project.domain.study.entity.Study;
 import com.example.study_project.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -43,4 +43,10 @@ public class Post {
         this.hits += 1;
     }
 
+    public void increasePeopleNum() {
+        if(this.recruitedPeopleNum < this.totalPeopleNum) {
+            this.recruitedPeopleNum += 1;
+        }
+    }
+
 }

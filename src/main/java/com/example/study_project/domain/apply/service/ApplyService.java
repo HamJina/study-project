@@ -124,6 +124,8 @@ public class ApplyService {
         //지원목록들중 승인을 받은 경우에만 참여가능
         if(findApply.getStatus() == ApplyStatus.ACCEPTED) {
             findApply.setStatus(ApplyStatus.JOINED);
+            //모집된 인원 증가시키기
+            findApply.getPost().increasePeopleNum();
         }
     }
 

@@ -33,7 +33,9 @@ public enum ErrorCode {
     NOT_EXIST_PEOPLE(HttpStatus.BAD_REQUEST, "참여자가 존재하지 않습니다."),
 
     NOT_EXIST_SCRAP(HttpStatus.BAD_REQUEST, "스크랩 목록이 존재하지 않습니다."),
-    NOT_EXIST_RECRUITING_POST(HttpStatus.BAD_REQUEST, "모집중인 모집글이 존재하지 않습니다.")
+    NOT_EXIST_RECRUITING_POST(HttpStatus.BAD_REQUEST, "모집중인 모집글이 존재하지 않습니다."),
+
+    POST_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 모집글입니다.")
     ;
 
     private final HttpStatus status;
