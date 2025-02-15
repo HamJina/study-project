@@ -7,6 +7,7 @@ import com.example.study_project.domain.apply.service.ApplyService;
 import com.example.study_project.domain.enums.ApplyStatus;
 import com.example.study_project.domain.posts.entity.Post;
 import com.example.study_project.domain.posts.repository.PostRepository;
+import com.example.study_project.domain.study.dto.StudyListResponseDTO;
 import com.example.study_project.domain.study.entity.Study;
 import com.example.study_project.domain.study.entity.StudyPeople;
 import com.example.study_project.domain.study.repository.StudyPeopleRepository;
@@ -17,6 +18,7 @@ import com.example.study_project.global.error.exception.ErrorCode;
 import jakarta.transaction.Transactional;
 import jdk.jfr.Registered;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.web.csrf.CsrfException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,8 +66,13 @@ public class StudyService {
         postRepository.save(findPost);
     }
 
+    //현재 사용자의 진행중인 스터디 조회
+    public List<StudyListResponseDTO> studyMyList(User currentUser) {
+        List<StudyListResponseDTO> myStudyList = studyPeopleRepository.findMyStudyList(currentUser.getId());
+        if(myStudyList.isEmpty()) {
+            throw new NullPointerException();
+        }
 
-    public void studyMyList(User currentUser) {
-
+        return  myStudyList;
     }
 }
