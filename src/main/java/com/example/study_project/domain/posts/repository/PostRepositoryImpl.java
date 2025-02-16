@@ -79,6 +79,22 @@ public class PostRepositoryImpl implements PostRepositoryCustom{
         return new SliceImpl<>(hasNext ? posts.subList(0, pageable.getPageSize()) : posts, pageable, hasNext);
     }
 
+    @Override
+    public Slice<Post> findKeywordFilterPostsAndRecruiting(Long lastPostId, Pageable pageable, String keyword) {
+        QPost post = QPost.post;
+
+        List<Post> posts = queryFactory
+                .selectFrom(post)
+                .where(lastPostId == null ? null : post.id.lt(lastPostId),keywordEq(keyword), post.recruited.eq(true))// lastPostId보다 작은 데이터 가져오기
+                .orderBy(post.id.desc()) // 최신순 정렬
+                .limit(pageable.getPageSize() + 1) // 다음 페이지 여부 확인을 위해 pageSize + 1개 조회
+                .fetch();
+
+        boolean hasNext = posts.size() > pageable.getPageSize();
+
+        return new SliceImpl<>(hasNext ? posts.subList(0, pageable.getPageSize()) : posts, pageable, hasNext);
+    }
+
     private BooleanExpression keywordEq(String keyword) {
         return isEmpty(keyword) ? null : post.title.contains(keyword);
     }

@@ -12,4 +12,5 @@ public interface PostRepositoryCustom {
     List<Post> findLatestRecruitmentPosts(int size);
     List<Post> findHotRecruitmentPosts(int size);
     Slice<Post> findKeywordPostsByPage(Long lastPostId, Pageable pageable, String keyword);
+    Slice<Post> findKeywordFilterPostsAndRecruiting(Long lastPostId, Pageable pageable, String keyword);
 }

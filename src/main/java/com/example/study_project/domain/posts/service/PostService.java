@@ -114,6 +114,17 @@ public class PostService {
         return keywordPosts.map(PostResponseDTO::createToDTO);
     }
 
+    public Slice<PostResponseDTO> getFilterPosts(Long lastPostId, Pageable pageable, String keyword, User currentUser) {
+        //keyword를 초함한 검색결과와 recruited가 true인 것들만 필터링해서 조회
+        Slice<Post> filteredPostList = postRepository.findKeywordFilterPostsAndRecruiting(lastPostId, pageable, keyword);
+
+        if(filteredPostList.isEmpty()) {
+            throw new CustomException(ErrorCode.SEARCHEDPOST_IS_NOT_EXIST);
+        }
+
+        return filteredPostList.map(PostResponseDTO::createToDTO);
+    }
+
     public PostResponseDTO updatePost(PostDTO postDTO, User currentUser, Long postId) {
         //수정할 모집글 정보 불러오기
         Post findPost = postRepository.findById(postId).orElseThrow(() -> {
@@ -203,4 +214,6 @@ public class PostService {
                 .map(PostResponseDTO::createToDTO)
                 .collect(Collectors.toList());
     }
+
+
 }

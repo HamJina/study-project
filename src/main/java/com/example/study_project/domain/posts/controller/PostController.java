@@ -127,6 +127,18 @@ public class PostController {
         return ResponseEntity.ok().body(keywordPosts);
     }
 
+    //모집글 필터링(모집중인것만 필터링)
+    @GetMapping("/search/filter")
+    public ResponseEntity getFilterPosts(@RequestParam(required = false) Long lastPostId,
+                                         @RequestParam(defaultValue = "10") int pageSize,
+                                         @RequestParam(defaultValue = "") String keyword) {
+        Pageable pageable = PageRequest.of(0, pageSize);
+        User currentUser = getCurrentUser();
+        Slice<PostResponseDTO> filterPosts = postService.getFilterPosts(lastPostId, pageable, keyword, currentUser);
+
+        return ResponseEntity.ok().body(filterPosts);
+    }
+
     //모집글 스크랩 설정
     @PostMapping("/scrap/{postId}")
     public ResponseEntity scrapPost(@PathVariable Long postId) {
