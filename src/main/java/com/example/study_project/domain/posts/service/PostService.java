@@ -55,14 +55,15 @@ public class PostService {
         return PostResponseDTO.createToDTO(post);
     }
 
-    //@Cacheable(value = "postCache", key = "#postId", cacheManager = "boardCacheManager")
+    @Cacheable(value = "getDetailPost", key = "'detailPost:postId:' + #postId", cacheManager = "cacheManager")
     public PostResponseDTO detailPost(long postId) {
         //id를 이용해서 모집글을 조회한다.
         Post findPost = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_POST));
         //조회된 모집글은 조회수가 증가한다.
         findPost.increaseHits();
         //entity -> dto
-        return PostResponseDTO.createToDTO(findPost);
+        PostResponseDTO responseDTO = PostResponseDTO.createToDTO(findPost);
+        return responseDTO;
     }
 
     @Cacheable(cacheNames = "getPostList", key = "'postList:lastPostId:' + #lastPostId", cacheManager = "cacheManager")
@@ -95,6 +96,7 @@ public class PostService {
                 .map(PostResponseDTO::createToDTO)
                 .collect(Collectors.toList());
     }
+
 
     public Slice<PostResponseDTO> getKeywordPosts(Long lastPostId, Pageable pageable, String keyword, User currentUser) {
         //검색 결과 list반환
