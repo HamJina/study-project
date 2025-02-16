@@ -22,4 +22,8 @@ public class Study {
     private int score;
 
     private int totalPeopleNum;
+
+    public void increaseScore(int score) {
+        this.score += score;
+    }
 }

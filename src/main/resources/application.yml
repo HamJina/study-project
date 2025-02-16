@@ -32,3 +32,19 @@ server:
 logging:
   level:
     org.springframework.cache: trace # Redis 사용에 대한 로그가 조회되도록 설정
+
+---
+# prod 환경
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mysql://[rds주소/db이름]
+    username: admin
+    password: password
+  data:
+    redis:
+      host: instagram-cache-server.k6e3vb.ng.0001.apn2.cache.amazonaws.com
+      port: 6379
