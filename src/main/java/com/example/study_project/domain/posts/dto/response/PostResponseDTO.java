@@ -24,6 +24,8 @@ public class PostResponseDTO {
     private int totalPeopleNum;
     private LocalDateTime createdDate;
 
+    private boolean status;
+
     //entity -> DTO
     public static PostResponseDTO createToDTO(Post post) {
         PostResponseDTO postResponseDTO = new PostResponseDTO();
@@ -41,4 +43,5 @@ public class PostResponseDTO {
 
         return postResponseDTO;
     }
+
 }

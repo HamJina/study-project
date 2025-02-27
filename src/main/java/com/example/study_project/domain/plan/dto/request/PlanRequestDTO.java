@@ -1,8 +1,6 @@
-package com.example.study_project.domain.plan.dto;
+package com.example.study_project.domain.plan.dto.request;
 
 import lombok.Data;
-
-import java.time.LocalDate;
 
 @Data
 public class PlanRequestDTO {

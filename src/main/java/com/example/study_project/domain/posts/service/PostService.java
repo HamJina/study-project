@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,17 +67,28 @@ public class PostService {
         return responseDTO;
     }
 
-    @Cacheable(cacheNames = "getPostList", key = "'postList:lastPostId:' + #lastPostId", cacheManager = "cacheManager")
-    public List<PostResponseDTO> getPostList(Long lastPostId, Pageable pageable) {
+
+    //여기 답이 없음 SliceImpl어케해결?
+    //@Cacheable(cacheNames = "getPostList", key = "'postList:lastPostId:' + #lastPostId", cacheManager = "cacheManager")
+    public Slice<PostResponseDTO> getPostList(Long lastPostId, Pageable pageable, User currentUser) {
+        // 기존 Slice<Post>를 가져옵니다.
         Slice<Post> postSlice = postRepository.findPostsByPage(lastPostId, pageable);
 
         // Entity -> DTO 변환
-        List<PostResponseDTO> postResponseDTOList = postSlice.stream()
-                .map(PostResponseDTO::createToDTO)
+        List<PostResponseDTO> postResponseDTOList = postSlice.getContent().stream()
+                .map(post -> {
+                    PostResponseDTO dto = PostResponseDTO.createToDTO(post);
+                    // status 설정: userId와 postId를 이용하여 status를 설정하는 로직 추가
+                    Scrap findScrap = scrapRespository.findByUserIdAndPostId(currentUser.getId(), post.getId());
+                    dto.setStatus(findScrap != null);
+                    return dto;
+                })
                 .collect(Collectors.toList());
 
-        return postResponseDTOList;
+        // 변환된 DTO 리스트와 pageable을 이용해 새로운 Slice 생성
+        return new SliceImpl<>(postResponseDTOList, pageable, postSlice.hasNext());
     }
+
 
 
     @Cacheable(cacheNames = "getNewPosts", key = "'newPosts:size:' + #size", cacheManager = "cacheManager")
