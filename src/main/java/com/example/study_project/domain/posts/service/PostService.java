@@ -218,6 +218,8 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+
+    @Cacheable(cacheNames = "getMyRecruitingPost", key = "'recruitingPost:username' + #currentUser.getName()", cacheManager = "cacheManager")
     public List<PostResponseDTO> recruitingPost(User currentUser) {
         List<Post> recruitingPosts = postRepository.findByWriterIdAndRecruitedTrue(currentUser.getId());
 
