@@ -143,10 +143,15 @@ public class PostController {
     @PostMapping("/scrap/{postId}")
     public ResponseEntity scrapPost(@PathVariable Long postId) {
         User currentUser = getCurrentUser();
-        postService.scrapPost(postId, currentUser);
+        boolean isScraped = postService.scrapPost(postId, currentUser);
+
 
         Map<String, String> responseData = new HashMap<>();
-        responseData.put("message", "스크랩이 설정되었습니다.");
+        if(isScraped){
+            responseData.put("message", "스크랩이 설정되었습니다.");
+        } else {
+            responseData.put("message", "스크랩이 해제되었습니다.");
+        }
 
         return ResponseEntity.ok().body(responseData);
     }

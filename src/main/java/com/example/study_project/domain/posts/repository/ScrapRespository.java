@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ScrapRespository extends JpaRepository<Scrap, Long> {
     List<Scrap> findByUserId(Long userId);
+
+    Scrap findByUserIdAndPostId(Long userId, Long postId);
 }

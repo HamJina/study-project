@@ -179,10 +179,23 @@ public class PostService {
         }
     }
 
-    public void scrapPost(Long postId, User currentUser) {
+    //스크랩 설정시 이미 설정된 스크랩은 더이상 x
+    //스크랩 설정및 해제에 대한 로직 작성하기
+    public boolean scrapPost(Long postId, User currentUser) {
+        //해당 postId가 존재하지 않으면 예외 처리
         Post findPost = postRepository.findById(postId).orElseThrow(() -> {
             throw new CustomException(ErrorCode.NOT_EXIST_POST);
         });
+
+        //해당 postId와 userId를 이용해서 이미 스크랩한 post인지 확인하기
+        Scrap findScrap = scrapRespository.findByUserIdAndPostId(currentUser.getId(), postId);
+
+        if(findScrap != null) {
+            //이미 존재하는 scrap이면 스크랩 해제시키기
+            scrapRespository.delete(findScrap);
+            return false; //스크랩 설정 해제됨
+
+        }
 
         Scrap scrap = new Scrap();
 
@@ -190,8 +203,10 @@ public class PostService {
         scrap.setPost(findPost);
 
         scrapRespository.save(scrap);
+        return true; //스크랩 설정됨
     }
 
+    @Cacheable(cacheNames = "getScrapList", key = "'scrapList:username' + #currentUser.getName()", cacheManager = "cacheManager")
     public List<PostResponseDTO> scrapPostList(User currentUser) {
         List<Scrap> findScrapList = scrapRespository.findByUserId(currentUser.getId());
         if(findScrapList.isEmpty()) {
