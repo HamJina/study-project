@@ -56,10 +56,15 @@ public class PlanController {
         return ResponseEntity.ok().body(responseData);
     }
 
-    //계획표 삭제가ㅣ
+    //계획표 삭제
     @DeleteMapping("/delete/{planId}")
     public ResponseEntity deletePlan(@PathVariable Long planId) {
-        planService.deletePlan(planId)
+        planService.deletePlan(planId);
+
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("message", "계획표가 삭제되었습니다.");
+
+        return ResponseEntity.ok().body(responseData);
     }
 
     private User getCurrentUser() {

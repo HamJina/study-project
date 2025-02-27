@@ -80,4 +80,12 @@ public class PlanService {
 
         return PlanResponseDTO.createToDTO(findPlan);
     }
+
+    public void deletePlan(Long planId) {
+        Plan findPlan = planRepository.findById(planId).orElseThrow(() -> {
+            throw new CustomException(ErrorCode.NOT_EXIST_PLANS);
+        });
+
+        planRepository.delete(findPlan);
+    }
 }
